@@ -1,4 +1,4 @@
-import { LicenseInfo } from '../types/music'
+import type { LicenseInfo } from '../types/music'
 
 export interface LicenseValidationResult {
   isValid: boolean

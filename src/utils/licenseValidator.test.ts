@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { validateTrackLicense, formatAttribution } from './licenseValidator'
-import { LicenseInfo } from '../types/music'
+import type { LicenseInfo } from '../types/music'
 
 describe('License Validator Utility', () => {
   it('validates public domain license correctly', () => {

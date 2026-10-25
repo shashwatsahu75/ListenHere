@@ -1,4 +1,4 @@
-import { Track, RepeatMode } from '../types/music'
+import type { Track, RepeatMode } from '../types/music'
 
 export interface QueueState {
   originalQueue: Track[]

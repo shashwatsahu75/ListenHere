@@ -1,4 +1,4 @@
-import { VoiceIntent, Genre, Language, Mood } from '../types/music'
+import type { VoiceIntent, Genre, Language, Mood } from '../types/music'
 
 const GENRE_MAP: Record<string, Genre> = {
   'indie': 'Indie',

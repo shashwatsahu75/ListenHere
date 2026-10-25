@@ -1,4 +1,4 @@
-import { Track, MusicProvider } from '../types/music'
+import type { Track, MusicProvider } from '../types/music'
 import { VERIFIED_TRACKS } from '../data/verifiedCatalogue'
 import { validateTrackLicense } from '../utils/licenseValidator'
 

@@ -1,4 +1,4 @@
-import { Track } from '../types/music'
+import type { Track } from '../types/music'
 
 /**
  * Curated catalogue of legally authorized audio recordings:

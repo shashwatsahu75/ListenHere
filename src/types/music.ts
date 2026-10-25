@@ -120,3 +120,11 @@ export interface VoiceIntent {
 }
 
 export type ActiveTab = 'discover' | 'search' | 'library' | 'playlists' | 'licenses'
+
+export interface MusicProvider {
+  id: string
+  name: string
+  description: string
+  getTracks(): Promise<Track[]>
+  getTrackById(id: string): Promise<Track | null>
+}

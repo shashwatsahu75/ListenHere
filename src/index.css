@@ -81,3 +81,20 @@ a {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+/* Responsive navigation visibility rules */
+.desktop-sidebar {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .desktop-sidebar {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  nav[aria-label="Mobile Navigation"] {
+    display: none !important;
+  }
+}

@@ -15,6 +15,8 @@ import { LicensesView } from './components/views/LicensesView'
 import { ErrorBoundary } from './components/common/ErrorBoundary'
 import type { ActiveTab } from './types/music'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { useDocumentTitle } from './hooks/useDocumentTitle'
+import { useMediaSession } from './hooks/useMediaSession'
 import { usePlayer } from './context/PlayerContext'
 
 export const AppContent: React.FC = () => {
@@ -25,6 +27,19 @@ export const AppContent: React.FC = () => {
   const [isQueueDrawerOpen, setIsQueueDrawerOpen] = useState(false)
 
   const { togglePlayPause, playNext, playPrevious, toggleMute, seek, playbackState } = usePlayer()
+
+  useDocumentTitle(
+    playbackState.currentTrack?.title || '',
+    playbackState.currentTrack?.artist,
+    playbackState.status === 'playing'
+  )
+
+  useMediaSession(playbackState.currentTrack, playbackState.status === 'playing', {
+    onPlay: togglePlayPause,
+    onPause: togglePlayPause,
+    onNext: playNext,
+    onPrevious: playPrevious,
+  })
 
   useKeyboardShortcuts({
     onTogglePlayPause: togglePlayPause,

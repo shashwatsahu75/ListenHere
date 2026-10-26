@@ -128,6 +128,22 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const startPlaybackOfTrack = useCallback((track: Track) => {
     if (!audioRef.current) return
     const audio = audioRef.current
+
+    // If track is a YouTube video, pause standard audio element and stream via embed iframe
+    if (track.youtubeVideoId) {
+      audio.pause()
+      audio.src = ''
+      setPlaybackState(prev => ({
+        ...prev,
+        currentTrack: track,
+        status: 'playing',
+        currentTime: 0,
+        duration: track.duration || 240,
+        errorMessage: null,
+      }))
+      return
+    }
+
     audio.src = track.audioUrl
     audio.currentTime = 0
 

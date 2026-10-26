@@ -61,6 +61,7 @@ export interface Track {
   year?: number
   isVerifiedPlayable: boolean
   tags: string[]
+  youtubeVideoId?: string
 }
 
 export type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error'

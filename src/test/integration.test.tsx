@@ -38,8 +38,8 @@ describe('ListenHere Full Application Integration', () => {
     fireEvent.change(input, { target: { value: 'Bhairav' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/Found 1 verified playable track/i)).toBeInTheDocument()
-    })
+      expect(screen.getByText(/Found \d+ verified playable track/i)).toBeInTheDocument()
+    }, { timeout: 3500 })
   })
 
   it('navigates to Legal Licenses view and shows legal registry', () => {

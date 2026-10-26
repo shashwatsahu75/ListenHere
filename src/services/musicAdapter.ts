@@ -1,6 +1,7 @@
 import type { Track, MusicProvider } from '../types/music'
 import { VERIFIED_TRACKS } from '../data/verifiedCatalogue'
 import { validateTrackLicense } from '../utils/licenseValidator'
+import { searchYouTubeMusic } from './youtubeService'
 
 export interface MusicSearchQuery {
   term?: string
@@ -40,6 +41,23 @@ export class ArchiveMusicAdapter implements MusicProvider {
 
   async search(query: MusicSearchQuery): Promise<Track[]> {
     const playable = await this.getTracks()
+
+    // If a specific search term is entered, query YouTube Data API for live full-catalogue music
+    if (query.term && query.term.trim().length > 1) {
+      try {
+        const ytResults = await searchYouTubeMusic(query.term, 12)
+        if (ytResults.length > 0) {
+          // Merge with matching local verified tracks
+          const localMatches = playable.filter(t => 
+            t.title.toLowerCase().includes(query.term!.toLowerCase()) ||
+            t.artist.toLowerCase().includes(query.term!.toLowerCase())
+          )
+          return [...ytResults, ...localMatches]
+        }
+      } catch (err) {
+        console.warn('YouTube live search fallback to local:', err)
+      }
+    }
 
     return playable.filter(track => {
       if (query.term) {

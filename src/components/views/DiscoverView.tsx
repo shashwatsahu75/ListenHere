@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import type { Track } from '../../types/music'
 import { defaultMusicAdapter } from '../../services/musicAdapter'
+import { getTrendingMusic } from '../../services/youtubeService'
 import { TrackCard } from '../track/TrackCard'
 import { Sparkles, Mic } from 'lucide-react'
 import { TrackCardSkeleton } from '../common/Skeleton'
@@ -25,6 +26,20 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({ onOpenVoiceSearch })
     async function loadDiscoverData() {
       setLoading(true)
       const data = await defaultMusicAdapter.getCuratedShelves()
+      try {
+        const trending = await getTrendingMusic()
+        if (trending.length > 0) {
+          data.unshift({
+            id: 'trending-hits',
+            title: '🔥 Trending Indian Hits (Live YouTube)',
+            subtitle: 'Popular tracks streaming via authorized YouTube API',
+            tracks: trending,
+          })
+        }
+      } catch (err) {
+        console.warn('Failed to fetch trending live tracks:', err)
+      }
+
       setShelves(data)
       if (data.length > 0 && data[0].tracks.length > 0) {
         setFeaturedTrack(data[0].tracks[0])

@@ -107,25 +107,38 @@ export const NowPlayingExpanded: React.FC<NowPlayingExpandedProps> = ({ isOpen, 
             style={{
               position: 'relative',
               width: '100%',
-              aspectRatio: '1/1',
-              maxWidth: '380px',
+              aspectRatio: '16/9',
+              maxWidth: '440px',
               borderRadius: 'var(--radius-lg)',
               overflow: 'hidden',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-              marginBottom: '28px',
+              marginBottom: '24px',
+              backgroundColor: '#000000',
             }}
           >
-            <img
-              src={track.artworkUrl}
-              alt={track.title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: isPlaying ? 'scale(1.02)' : 'scale(1)',
-                transition: 'transform 0.5s ease',
-              }}
-            />
+            {track.youtubeVideoId ? (
+              <iframe
+                title={track.title}
+                width="100%"
+                height="100%"
+                src={`https://www.youtube-nocookie.com/embed/${track.youtubeVideoId}?autoplay=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ border: 'none', width: '100%', height: '100%' }}
+              />
+            ) : (
+              <img
+                src={track.artworkUrl}
+                alt={track.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transform: isPlaying ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'transform 0.5s ease',
+                }}
+              />
+            )}
           </div>
 
           {/* Live Audio Visualizer */}

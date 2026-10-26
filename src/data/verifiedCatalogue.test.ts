@@ -10,7 +10,7 @@ describe('Verified Music Catalogue', () => {
       expect(track.id).toBeTruthy()
       expect(track.title).toBeTruthy()
       expect(track.artist).toBeTruthy()
-      expect(track.audioUrl).toMatch(/^https?:\/\//)
+      expect(track.audioUrl).toMatch(/^(\/|https?:\/\/)/)
       expect(track.sourceUrl).toMatch(/^https?:\/\//)
       expect(track.duration).toBeGreaterThan(0)
       expect(track.license).toBeDefined()

@@ -4,6 +4,8 @@ import {
   Pause,
   SkipBack,
   SkipForward,
+  RotateCcw,
+  RotateCw,
   Volume2,
   VolumeX,
   Shuffle,
@@ -83,8 +85,8 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({
           aria-valuenow={playbackState.currentTime}
           style={{
             width: '100%',
-            height: '4px',
-            backgroundColor: 'var(--color-border)',
+            height: '8px',
+            backgroundColor: 'var(--color-bg-highlight)',
             cursor: 'pointer',
             position: 'relative',
           }}
@@ -209,6 +211,15 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({
               </button>
 
               <button
+                onClick={() => seek(Math.max(0, playbackState.currentTime - 5))}
+                aria-label="Rewind 5 seconds"
+                title="Rewind 5s"
+                style={{ color: 'var(--color-text-secondary)', padding: '6px' }}
+              >
+                <RotateCcw size={17} />
+              </button>
+
+              <button
                 onClick={togglePlayPause}
                 aria-label={isPlaying ? 'Pause' : 'Play'}
                 style={{
@@ -226,6 +237,15 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({
                 onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
               >
                 {isPlaying ? <Pause size={20} fill="#ffffff" /> : <Play size={20} fill="#ffffff" style={{ marginLeft: '2px' }} />}
+              </button>
+
+              <button
+                onClick={() => seek(Math.min(playbackState.duration, playbackState.currentTime + 5))}
+                aria-label="Forward 5 seconds"
+                title="Forward 5s"
+                style={{ color: 'var(--color-text-secondary)', padding: '6px' }}
+              >
+                <RotateCw size={17} />
               </button>
 
               <button

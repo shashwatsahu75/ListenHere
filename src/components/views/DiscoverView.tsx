@@ -3,6 +3,7 @@ import type { Track } from '../../types/music'
 import { defaultMusicAdapter } from '../../services/musicAdapter'
 import { TrackCard } from '../track/TrackCard'
 import { Sparkles, Mic } from 'lucide-react'
+import { TrackCardSkeleton } from '../common/Skeleton'
 
 interface DiscoverViewProps {
   onOpenVoiceSearch: () => void
@@ -35,8 +36,12 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({ onOpenVoiceSearch })
 
   if (loading) {
     return (
-      <div style={{ padding: '32px', textAlign: 'center', color: 'var(--color-text-muted)' }}>
-        Loading verified music catalogue...
+      <div style={{ padding: '24px 32px 120px 32px', maxWidth: '1400px', margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '20px' }}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <TrackCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     )
   }

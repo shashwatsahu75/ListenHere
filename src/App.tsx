@@ -13,6 +13,8 @@ import { LibraryView } from './components/views/LibraryView'
 import { PlaylistsView } from './components/views/PlaylistsView'
 import { LicensesView } from './components/views/LicensesView'
 import type { ActiveTab } from './types/music'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { usePlayer } from './context/PlayerContext'
 
 export const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('discover')
@@ -20,6 +22,18 @@ export const AppContent: React.FC = () => {
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false)
   const [isNowPlayingExpanded, setIsNowPlayingExpanded] = useState(false)
   const [isQueueDrawerOpen, setIsQueueDrawerOpen] = useState(false)
+
+  const { togglePlayPause, playNext, playPrevious, toggleMute, seek, playbackState } = usePlayer()
+
+  useKeyboardShortcuts({
+    onTogglePlayPause: togglePlayPause,
+    onNext: playNext,
+    onPrevious: playPrevious,
+    onMuteToggle: toggleMute,
+    onSeekForward: () => seek(Math.min(playbackState.duration, playbackState.currentTime + 5)),
+    onSeekBackward: () => seek(Math.max(0, playbackState.currentTime - 5)),
+    onOpenVoiceSearch: () => setIsVoiceModalOpen(true),
+  })
 
   const handleOpenSearchWithQuery = (query: string) => {
     setSearchQuery(query)

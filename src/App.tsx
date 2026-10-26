@@ -8,13 +8,23 @@ import { NowPlayingExpanded } from './components/player/NowPlayingExpanded'
 import { QueueDrawer } from './components/player/QueueDrawer'
 import { VoiceSearchModal } from './components/voice/VoiceSearchModal'
 import { DiscoverView } from './components/views/DiscoverView'
+import { SearchView } from './components/views/SearchView'
+import { LibraryView } from './components/views/LibraryView'
+import { PlaylistsView } from './components/views/PlaylistsView'
+import { LicensesView } from './components/views/LicensesView'
 import type { ActiveTab } from './types/music'
 
 export const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('discover')
+  const [searchQuery, setSearchQuery] = useState('')
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false)
   const [isNowPlayingExpanded, setIsNowPlayingExpanded] = useState(false)
   const [isQueueDrawerOpen, setIsQueueDrawerOpen] = useState(false)
+
+  const handleOpenSearchWithQuery = (query: string) => {
+    setSearchQuery(query)
+    setActiveTab('search')
+  }
 
   return (
     <div
@@ -26,7 +36,7 @@ export const AppContent: React.FC = () => {
       }}
     >
       {/* Desktop Sidebar Navigation */}
-      <div style={{ display: 'none', md: 'block' } as any} className="sidebar-container">
+      <div className="desktop-sidebar">
         <SidebarNav
           activeTab={activeTab}
           onSelectTab={setActiveTab}
@@ -40,17 +50,14 @@ export const AppContent: React.FC = () => {
           <DiscoverView onOpenVoiceSearch={() => setIsVoiceModalOpen(true)} />
         )}
         {activeTab === 'search' && (
-          <div style={{ padding: '32px' }}>Search view loading...</div>
+          <SearchView
+            initialQuery={searchQuery}
+            onOpenVoiceSearch={() => setIsVoiceModalOpen(true)}
+          />
         )}
-        {activeTab === 'library' && (
-          <div style={{ padding: '32px' }}>Liked tracks loading...</div>
-        )}
-        {activeTab === 'playlists' && (
-          <div style={{ padding: '32px' }}>Curated playlists loading...</div>
-        )}
-        {activeTab === 'licenses' && (
-          <div style={{ padding: '32px' }}>Legal licenses loading...</div>
-        )}
+        {activeTab === 'library' && <LibraryView />}
+        {activeTab === 'playlists' && <PlaylistsView />}
+        {activeTab === 'licenses' && <LicensesView />}
       </main>
 
       {/* Persistent Mini Player */}
@@ -76,10 +83,7 @@ export const AppContent: React.FC = () => {
       <VoiceSearchModal
         isOpen={isVoiceModalOpen}
         onClose={() => setIsVoiceModalOpen(false)}
-        onSearchResults={query => {
-          setActiveTab('search')
-          console.log('Voice search query:', query)
-        }}
+        onSearchResults={handleOpenSearchWithQuery}
       />
     </div>
   )

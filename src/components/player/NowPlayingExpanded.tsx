@@ -17,6 +17,8 @@ import { usePlayer } from '../../context/PlayerContext'
 import { formatTime } from '../../utils/formatTime'
 import { LicenseModal } from '../license/LicenseModal'
 import { AudioVisualizer } from './AudioVisualizer'
+import { getSimilarTracks } from '../../utils/recommendations'
+import { VERIFIED_TRACKS } from '../../data/verifiedCatalogue'
 
 interface NowPlayingExpandedProps {
   isOpen: boolean
@@ -26,6 +28,7 @@ interface NowPlayingExpandedProps {
 export const NowPlayingExpanded: React.FC<NowPlayingExpandedProps> = ({ isOpen, onClose }) => {
   const {
     playbackState,
+    playTrack,
     togglePlayPause,
     playNext,
     playPrevious,
@@ -278,6 +281,45 @@ export const NowPlayingExpanded: React.FC<NowPlayingExpandedProps> = ({ isOpen, 
             >
               {playbackState.repeatMode === 'one' ? <Repeat1 size={22} /> : <Repeat size={22} />}
             </button>
+          </div>
+
+          {/* Transparent Similar Tracks Recommendations */}
+          <div style={{ width: '100%', marginTop: '32px', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-text-secondary)', marginBottom: '12px', textTransform: 'uppercase' }}>
+              Similar Verified Sounds ({track.genre} • {track.language})
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
+              {getSimilarTracks(track, VERIFIED_TRACKS, 3).map(simTrack => (
+                <div
+                  key={simTrack.id}
+                  onClick={() => playTrack(simTrack, VERIFIED_TRACKS)}
+                  style={{
+                    backgroundColor: 'var(--color-bg-card)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '10px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                >
+                  <img
+                    src={simTrack.artworkUrl}
+                    alt={simTrack.title}
+                    style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-sm)', objectFit: 'cover' }}
+                  />
+                  <div style={{ overflow: 'hidden' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {simTrack.title}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {simTrack.artist}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Volume Scrubber */}

@@ -12,6 +12,7 @@ import { SearchView } from './components/views/SearchView'
 import { LibraryView } from './components/views/LibraryView'
 import { PlaylistsView } from './components/views/PlaylistsView'
 import { LicensesView } from './components/views/LicensesView'
+import { ErrorBoundary } from './components/common/ErrorBoundary'
 import type { ActiveTab } from './types/music'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { usePlayer } from './context/PlayerContext'
@@ -60,6 +61,7 @@ export const AppContent: React.FC = () => {
 
       {/* Main View Area */}
       <main style={{ flex: 1, minWidth: 0, paddingBottom: 'calc(var(--player-height) + 60px)' }}>
+        <ErrorBoundary>
         {activeTab === 'discover' && (
           <DiscoverView onOpenVoiceSearch={() => setIsVoiceModalOpen(true)} />
         )}
@@ -72,6 +74,7 @@ export const AppContent: React.FC = () => {
         {activeTab === 'library' && <LibraryView />}
         {activeTab === 'playlists' && <PlaylistsView />}
         {activeTab === 'licenses' && <LicensesView />}
+              </ErrorBoundary>
       </main>
 
       {/* Persistent Mini Player */}

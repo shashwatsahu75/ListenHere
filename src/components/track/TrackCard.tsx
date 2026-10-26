@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import type { Track } from '../../types/music'
-import { Play, Pause, Heart, Info, Plus, Music } from 'lucide-react'
+import { Play, Pause, Heart, Info, Plus, Music, Share2 } from 'lucide-react'
+import { shareTrack } from '../../utils/share'
 import { usePlayer } from '../../context/PlayerContext'
 import { LicenseModal } from '../license/LicenseModal'
 import { formatTime } from '../../utils/formatTime'
@@ -224,6 +225,22 @@ export const TrackCard: React.FC<TrackCardProps> = ({ track, playlistContext }) 
                 }}
               >
                 <Plus size={16} />
+              </button>
+
+              <button
+                onClick={async e => {
+                  e.stopPropagation()
+                  await shareTrack(track)
+                }}
+                aria-label="Share track"
+                title="Share track"
+                style={{
+                  color: 'var(--color-text-muted)',
+                  display: 'flex',
+                  padding: '4px',
+                }}
+              >
+                <Share2 size={16} />
               </button>
 
               <button

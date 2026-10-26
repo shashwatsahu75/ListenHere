@@ -16,6 +16,7 @@ import {
 import { usePlayer } from '../../context/PlayerContext'
 import { formatTime } from '../../utils/formatTime'
 import { LicenseModal } from '../license/LicenseModal'
+import { AudioVisualizer } from './AudioVisualizer'
 
 interface NowPlayingExpandedProps {
   isOpen: boolean
@@ -123,6 +124,9 @@ export const NowPlayingExpanded: React.FC<NowPlayingExpandedProps> = ({ isOpen, 
               }}
             />
           </div>
+
+          {/* Live Audio Visualizer */}
+          <div style={{ width: "100%", marginBottom: "16px" }}><AudioVisualizer isPlaying={isPlaying} accentColor={track.accentColor || "#10b981"} height={40} /></div>
 
           {/* Track Details */}
           <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>

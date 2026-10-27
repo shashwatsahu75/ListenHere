@@ -4,6 +4,7 @@ import { PlayerProvider } from './context/PlayerContext'
 import { SidebarNav } from './components/navigation/SidebarNav'
 import { MobileNav } from './components/navigation/MobileNav'
 import { MiniPlayer } from './components/player/MiniPlayer'
+import { YouTubeHiddenPlayer } from './components/player/YouTubeHiddenPlayer'
 import { NowPlayingExpanded } from './components/player/NowPlayingExpanded'
 import { QueueDrawer } from './components/player/QueueDrawer'
 import { VoiceSearchModal } from './components/voice/VoiceSearchModal'
@@ -97,6 +98,8 @@ export const AppContent: React.FC = () => {
         onExpandNowPlaying={() => setIsNowPlayingExpanded(true)}
         onToggleQueueDrawer={() => setIsQueueDrawerOpen(prev => !prev)}
       />
+
+      <YouTubeHiddenPlayer />
 
       {/* Mobile Bottom Navigation */}
       <MobileNav activeTab={activeTab} onSelectTab={setActiveTab} />

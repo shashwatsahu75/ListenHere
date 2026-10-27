@@ -3,6 +3,7 @@ import type { Track, PlaybackState } from '../types/music'
 import { QueueManager } from '../utils/queueManager'
 import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '../utils/storage'
 import { VERIFIED_TRACKS } from '../data/verifiedCatalogue'
+import { youtubeController } from '../services/youtubePlayer'
 
 interface PlayerContextType {
   playbackState: PlaybackState
@@ -76,9 +77,11 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const onError = () => {
       console.warn('[Audio Player] Audio loading/playback error encountered.')
       setPlaybackState(prev => ({
-        ...prev,
-        status: 'error',
-        errorMessage: 'Playback failed. The remote audio source may be temporarily unavailable.',
+        ...(prev.currentTrack?.youtubeVideoId ? prev : {
+          ...prev,
+          status: 'error',
+          errorMessage: 'Playback failed. The remote audio source may be temporarily unavailable.',
+        }),
       }))
     }
 
@@ -129,10 +132,10 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     if (!audioRef.current) return
     const audio = audioRef.current
 
-    // If track is a YouTube video, pause standard audio element and stream via embed iframe
+    // If track is a YouTube video, use YouTube controller API
     if (track.youtubeVideoId) {
       audio.pause()
-      audio.src = ''
+
       setPlaybackState(prev => ({
         ...prev,
         currentTrack: track,
@@ -141,9 +144,14 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         duration: track.duration || 240,
         errorMessage: null,
       }))
+
+      // Send load command to youtubeController
+      youtubeController.loadVideo(track.youtubeVideoId)
       return
     }
 
+    // Standard audio file playback
+    youtubeController.pause()
     audio.src = track.audioUrl
     audio.currentTime = 0
 
@@ -186,10 +194,24 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [startPlaybackOfTrack, syncQueueState])
 
   const togglePlayPause = useCallback(() => {
+    const isPlaying = playbackState.status === 'playing'
+    const isYT = Boolean(playbackState.currentTrack?.youtubeVideoId)
+
+    if (isYT) {
+      if (isPlaying) {
+        youtubeController.pause()
+        setPlaybackState(prev => ({ ...prev, status: 'paused' }))
+      } else {
+        youtubeController.play()
+        setPlaybackState(prev => ({ ...prev, status: 'playing' }))
+      }
+      return
+    }
+
     const audio = audioRef.current
     if (!audio) return
 
-    if (playbackState.status === 'playing') {
+    if (isPlaying) {
       audio.pause()
     } else {
       if (!audio.src && playbackState.currentTrack) {
@@ -221,17 +243,24 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [startPlaybackOfTrack, syncQueueState])
 
   const seek = useCallback((seconds: number) => {
+    if (playbackState.currentTrack?.youtubeVideoId) {
+      youtubeController.seekTo(seconds)
+      setPlaybackState(prev => ({ ...prev, currentTime: seconds }))
+      return
+    }
+
     if (audioRef.current) {
       audioRef.current.currentTime = seconds
       setPlaybackState(prev => ({ ...prev, currentTime: seconds }))
     }
-  }, [])
+  }, [playbackState.currentTrack])
 
   const setVolume = useCallback((level: number) => {
     const clamped = Math.max(0, Math.min(1, level))
     if (audioRef.current) {
       audioRef.current.volume = clamped
     }
+    youtubeController.setVolume(clamped)
     setPlaybackState(prev => ({
       ...prev,
       volume: clamped,
@@ -241,10 +270,16 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [])
 
   const toggleMute = useCallback(() => {
-    if (!audioRef.current) return
     setPlaybackState(prev => {
       const willMute = !prev.isMuted
-      audioRef.current!.muted = willMute
+      if (audioRef.current) {
+        audioRef.current.muted = willMute
+      }
+      if (willMute) {
+        youtubeController.mute()
+      } else {
+        youtubeController.unMute()
+      }
       return { ...prev, isMuted: willMute }
     })
   }, [])

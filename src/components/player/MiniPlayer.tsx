@@ -321,19 +321,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({
         </div>
       </footer>
 
-      {/* Hidden YouTube background audio iframe */}
-      {currentTrack.youtubeVideoId && (
-        <div style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0.01, pointerEvents: 'none', overflow: 'hidden' }}>
-          <iframe
-            title="mini-yt-player"
-            width="200"
-            height="200"
-            src={`https://www.youtube-nocookie.com/embed/${currentTrack.youtubeVideoId}?autoplay=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
-            allow="autoplay; encrypted-media"
-            style={{ border: 'none' }}
-          />
-        </div>
-      )}
+
 
       <LicenseModal
         track={currentTrack}

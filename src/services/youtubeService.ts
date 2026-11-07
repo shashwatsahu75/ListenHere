@@ -1,6 +1,6 @@
 import type { Track, Language, Genre, Mood } from '../types/music'
 
-const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY || 'AIzaSyBVljymN4zP3phF6wjerNufk6Gl7Tzach4'
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY || ''
 
 export interface YouTubeSearchOptions {
   query: string
